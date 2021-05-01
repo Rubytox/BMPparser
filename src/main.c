@@ -11,10 +11,20 @@ int main(int argc, char *argv[])
     }
 
     char *filename = argv[1];
-    BMP_header *header = extract_header(filename);
-    print_header(header);
+    BMP_picture *picture = parse_picture(filename);
+    printf("BMP header\n");
+    printf("==========\n");
+    print_header(picture->bmp_header);
 
-    free(header);
+    printf("\n");
+    printf("DIB header\n");
+    printf("==========\n");
+    print_DIB_header(picture->dib_header);
+
+    free_picture(&picture);
+
+    printf("Value of ptr picture: %p\n", picture);
+
 
     return 0;
 }

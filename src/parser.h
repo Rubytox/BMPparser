@@ -6,16 +6,6 @@
 #include <stdint.h>
 #include <string.h>
 
-// We'll se if we use this
-/*
-typedef enum _magic_number {
-    BM,
-    CI,
-    CP,
-    IC,
-    PT
-} magic_number;
-*/
 
 /**
  * The header is of the following format:
@@ -33,9 +23,31 @@ typedef struct {
     uint8_t contents_offset[4];
 } BMP_header;
 
-BMP_header *extract_header(const char *path);
+typedef struct {
+    uint8_t header_size[4];
+    uint8_t width[4];
+    uint8_t height[4];
+    uint8_t planes[2];
+    uint8_t bits_per_pixel[2];
+    uint8_t compression_method[4];
+    uint8_t image_size[4];
+    uint8_t h_resolution[4];
+    uint8_t v_resolution[4];
+    uint8_t nb_colors[4];
+    uint8_t nb_important_colors[4];
+} BITMAPINFOHEADER;
+
+typedef struct {
+    BMP_header *bmp_header;
+    BITMAPINFOHEADER *dib_header;
+} BMP_picture;
+
+BMP_header *extract_BMP_header(FILE *picture);
+BITMAPINFOHEADER *extract_DIB_header(FILE *picture);
+
 void print_header(BMP_header *header);
+void print_DIB_header(BITMAPINFOHEADER *header);
 
-char *format_to_string(char format[3]);
-
+BMP_picture *parse_picture(const char *path);
+void free_picture(BMP_picture **p_picture);
 #endif // PARSER_H
