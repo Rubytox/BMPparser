@@ -60,6 +60,50 @@ void print_DIB_header(BITMAPINFOHEADER *header)
     printf("Vertical resolution: %d\n", to_int(header->v_resolution, 4));
     printf("Number of colors: %d\n", to_int(header->nb_colors, 4));
     printf("Number of important colors: %d\n", to_int(header->nb_important_colors, 4));
+
+    printf("Compression method: ");
+    switch ((compression_methods) to_int(header->compression_method, 4)) {
+	case BI_RGB:
+        printf("no compression\n");
+        break;
+
+	case BI_RLE8:
+        printf("RLE 8-bit/pixel\n");
+        break;
+
+	case BI_RLE4:
+        printf("RLE 4-bit/pixel\n");
+        break;
+
+	case BI_BITFIELDS:
+        printf("Huffman 1D\n");
+        break;
+
+	case BI_JPEG:
+        printf("RLE-24\n");
+        break;
+
+	case BI_PNG:
+        printf("PNG\n");
+        break;
+
+	case BI_ALPHABITFIELDS:
+        printf("RGBA bit field masks\n");
+        break;
+
+	case BI_CMYK:
+        printf("no compression (Windows Metafile)\n");
+        break;
+
+	case BI_CMYRKLE8:
+        printf("RLE 8-bit/pixel (Windows Metafile)\n");
+        break;
+
+    case BI_CMYRKLE4:
+        printf("RLE 4-bit/pixel (Windows Metafile)\n");
+        break;
+
+    }
 }
 
 BMP_picture *parse_picture(const char *path)

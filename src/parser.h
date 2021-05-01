@@ -42,6 +42,19 @@ typedef struct {
     BITMAPINFOHEADER *dib_header;
 } BMP_picture;
 
+typedef enum {
+    BI_RGB = 0,
+    BI_RLE8,
+    BI_RLE4,
+    BI_BITFIELDS,
+    BI_JPEG,
+    BI_PNG,
+    BI_ALPHABITFIELDS,
+    BI_CMYK,
+    BI_CMYRKLE8,
+    BI_CMYRKLE4
+} compression_methods;
+
 BMP_header *extract_BMP_header(FILE *picture);
 BITMAPINFOHEADER *extract_DIB_header(FILE *picture);
 
