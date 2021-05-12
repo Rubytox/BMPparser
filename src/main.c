@@ -21,10 +21,16 @@ int main(int argc, char *argv[])
     printf("==========\n");
     print_DIB_header(picture->dib_header);
 
+    printf("Is header valid ? ");
+    switch ( is_header_valid(picture)){
+        case HEADER_NOT_SUPPORTED : printf("not supported \n"); break;
+        case HEADER_INVALID: printf("not valid \n"); break;
+        case HEADER_VALID : printf("valid \n"); break;
+    }
+
     free_picture(&picture);
 
     printf("Value of ptr picture: %p\n", picture);
-
 
     return 0;
 }
