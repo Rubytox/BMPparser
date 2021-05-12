@@ -29,6 +29,63 @@ int to_int(uint8_t *bytes, int nb_bytes)
     return value;
 }
 
+
+//returns HEADER_VALID if header is maybe valid, HEADER_INVALID if header is for sure not valid and HEADER_NOT_SUPPORTED if it is not supported
+header_validity is_header_valid(BMP_picture *picture){
+    // only possibilities for header field are BM/BA/CI/CP/IC/PT
+    if (!( (picture->bmp_header->format[0] == 'B' && picture->bmp_header->format[1] == 'M') || 
+    (picture->bmp_header->format[0] == 'B' && picture->bmp_header->format[1] == 'A' ) ||  
+    (picture->bmp_header->format[0] == 'C' && picture->bmp_header->format[1] == 'I') ||
+    (picture->bmp_header->format[0] == 'C' && picture->bmp_header->format[1] == 'P') ||
+    (picture->bmp_header->format[0] == 'I' && picture->bmp_header->format[1] == 'C') ||
+    (picture->bmp_header->format[0] == 'P' && picture->bmp_header->format[1] == 'T')
+    )){
+        return HEADER_INVALID;
+    }
+
+    // not implemented yet :: to_int(picture->bmp_header->size, 4) needs to be equal to output of "du image -b"
+
+    // only possible header sizes
+    int size = to_int(picture->dib_header->header_size, 4);
+    if (size == 52 || size == 56 || size == 64){
+        return HEADER_NOT_SUPPORTED;
+    }
+
+    if (size!= 12  && size!= 16 && size!= 40 && size!= 108 && size!= 124){
+        return HEADER_INVALID;
+    }
+    
+    // seems that plantes must always be 1 ??
+    if (to_int(picture->dib_header->planes, 2) != 1){
+        return HEADER_INVALID;
+    }
+
+    // further parsing is allowed
+    if (size != 12 && size != 16){
+
+        // number of bits per pixel must be in {1,4,8,16,24,32}
+        if( to_int(picture->dib_header->bits_per_pixel, 2) != 1 && 
+        to_int(picture->dib_header->bits_per_pixel, 2) != 4 && 
+        to_int(picture->dib_header->bits_per_pixel, 2) != 8 &&
+        to_int(picture->dib_header->bits_per_pixel, 2) != 16 && 
+        to_int(picture->dib_header->bits_per_pixel, 2) != 24 && 
+        to_int(picture->dib_header->bits_per_pixel, 2) != 32  ){
+            return HEADER_INVALID;
+        }
+
+        //check validity of compression method
+        int compression_method = to_int(picture->dib_header->compression_method,4);
+        if (compression_method < 0 || compression_method >=14){
+            return HEADER_INVALID;
+        }
+
+        // not finished yet
+
+    }
+    return HEADER_VALID;
+}
+
+
 void print_header(BMP_header *header)
 {
     if (header == NULL) {
